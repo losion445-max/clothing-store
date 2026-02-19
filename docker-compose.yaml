@@ -19,5 +19,23 @@ services:
     ports:
       - 8080:8080
 
+  backend:
+    restart: always
+    ports:
+      - 8081:8080
+    depends_on:
+      - db
+
+    build:
+      context: ./backend
+      dockerfile: Dockerfile.dev
+    volumes:
+      - ./backend:/backend
+      - maven_cache:/root/.m2
+    environment:
+      SPRING_DATASOURCE_URL: ${SPRING_DATASOURCE_URL}
+      SPRING_DATASOURCE_USERNAME: ${SPRING_DATASOURCE_USERNAME}
+      SPRING_DATASOURCE_PASSWORD: ${SPRING_DATASOURCE_PASSWORD}
 volumes:
   db_data:
+  maven_cache:

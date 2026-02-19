@@ -1,0 +1,12 @@
+spring:
+  application:
+    name: clothing store backend
+
+  jpa:
+    hibernate:
+      ddl-auto: update
+    show-sql: true
+  datasource:
+    url: ${SPRING_DATASOURCE_URL}
+    name: ${SPRING_DATASOURCE_USERNAME}
+    password: ${SPRING_DATASOURCE_PASSWORD}
