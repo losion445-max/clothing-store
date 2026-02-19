@@ -49,8 +49,6 @@ services:
 
     volumes:
       - ./frontend:/frontend
-      - /frontend/node_modules
-
 volumes:
   db_data:
   maven_cache:
