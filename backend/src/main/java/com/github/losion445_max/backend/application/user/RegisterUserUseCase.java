@@ -4,13 +4,14 @@ import com.github.losion445_max.backend.domain.user.repository.UserRepository;
 import com.github.losion445_max.backend.web.user.dto.RegisterUserRequest;
 
 import lombok.AllArgsConstructor;
-
+import lombok.extern.slf4j.Slf4j;
 
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
 import com.github.losion445_max.backend.domain.user.model.User;
 
+@Slf4j
 @Service
 @AllArgsConstructor
 public class RegisterUserUseCase {
@@ -21,7 +22,10 @@ public class RegisterUserUseCase {
 
 
     public User execute(RegisterUserRequest userDTO) {
+        log.info("Register use case starter for: " + userDTO);
+
         if (userRepository.existsByEmail(userDTO.getEmail())) {
+            log.warn("Email {} is already in use", userDTO.getEmail());
             throw new IllegalArgumentException("Email is already in use");
         }
 
@@ -31,7 +35,10 @@ public class RegisterUserUseCase {
         .hashPassword(passwordEncoder.encode(userDTO.getPassword()))
         .build();
 
-        return userRepository.save(user);
+        User savedUser = userRepository.save(user);
+        log.info("User saved: " + savedUser);
+
+        return savedUser;
 
     }
     
