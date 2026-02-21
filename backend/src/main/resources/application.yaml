@@ -1,6 +1,11 @@
 spring:
   application:
     name: clothing store backend
+  web:
+    error:
+      include-message: always
+      include-binding-errors: always
+      include-stacktrace: never
 
   jpa:
     hibernate:
