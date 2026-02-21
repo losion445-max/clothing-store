@@ -29,11 +29,11 @@ public class RegisterUserUseCase {
             throw new IllegalArgumentException("Email is already in use");
         }
 
-        User user = User.builder()
-        .name(userDTO.getName())
-        .email(userDTO.getEmail())
-        .hashPassword(passwordEncoder.encode(userDTO.getPassword()))
-        .build();
+        User user = User.create(
+            userDTO.getName(),
+             userDTO.getEmail(),
+             passwordEncoder.encode(userDTO.getPassword())
+        );
 
         User savedUser = userRepository.save(user);
         log.info("User saved: " + savedUser);

@@ -13,15 +13,13 @@ import lombok.NoArgsConstructor;
 
 
 
-@Data
 @Builder
 @NoArgsConstructor
 @AllArgsConstructor
 public class User {
     @NotNull
     private UUID id;
-
-    @NotBlank
+    
     private String name;
 
     @Email
@@ -37,10 +35,30 @@ public class User {
     private Instant createdAt;
     private Instant updatedAt;
 
+    public static User create(String name, String email, String hashPassword) {
+        if (name == null || name.isBlank()) {
+            throw new IllegalArgumentException("Name is required");
+        }
+
+        if (email == null || email.isBlank() || !email.matches("^[A-Za-z0-9+_.-]+@(.+)$")) {
+            throw new IllegalArgumentException("Email is invalid");
+        }
+        if (hashPassword == null || hashPassword.isBlank()) {
+            throw new IllegalArgumentException("Password is required");
+        }
+
+        return User.builder()
+            .name(name)
+            .email(email)
+            .hashPassword(hashPassword)
+            .build();
+        }
+
     public enum Role {
         ADMIN,
         USER
     }
+
 }
 
 
