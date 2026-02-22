@@ -36,7 +36,7 @@ public class RegisterUserUseCase {
         );
 
         User savedUser = userRepository.save(user);
-        log.info("User saved: " + savedUser);
+        log.info("User saved with id={}: ", user.getId());
 
         return savedUser;
 
