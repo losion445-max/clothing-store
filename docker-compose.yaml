@@ -20,6 +20,7 @@ services:
       - 8080:8080
 
   backend:
+    user: 1000:1000
     restart: always
     ports:
       - 8081:8080
