@@ -18,16 +18,12 @@ import lombok.NoArgsConstructor;
 @AllArgsConstructor
 @Data
 public class User {
-    @NotNull
     private UUID id;
     
     private String name;
 
-    @Email
-    @NotBlank
     private String email;
 
-    @NotBlank
     private String hashPassword;
 
     @Builder.Default
