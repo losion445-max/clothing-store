@@ -1,0 +1,84 @@
+package com.github.losion445_max.backend.infrastructure.security;
+
+import org.junit.jupiter.api.DisplayName;
+import org.junit.jupiter.api.Tag;
+import org.junit.jupiter.api.Test;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.boot.webmvc.test.autoconfigure.WebMvcTest;
+import org.springframework.context.annotation.Import;
+import org.springframework.test.context.bean.override.mockito.MockitoBean;
+import org.springframework.test.web.servlet.MockMvc;
+
+import static org.mockito.Mockito.*;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
+import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
+
+@Tag("integration")
+@WebMvcTest
+@Import(SecurityConfig.class)
+class JwtFilterIntegrationTest {
+
+    @Autowired
+    private MockMvc mockMvc;
+
+    @MockitoBean
+    private JwtProvider jwtProvider;
+
+    @Test
+    @DisplayName("Should authenticate when token is valid")
+    void doFilterInternal_ValidToken() throws Exception {
+        String token = "valid.token.string";
+        String id = "user-uuid";
+        String role = "USER";
+
+        when(jwtProvider.validateToken(token)).thenReturn(true);
+        when(jwtProvider.getIdFromToken(token)).thenReturn(id);
+        when(jwtProvider.getRoleFromToken(token)).thenReturn(role);
+
+        mockMvc.perform(get("/api/any-protected-resource")
+                .header("Authorization", "Bearer " + token))
+                .andExpect(status().isNotFound());
+
+        verify(jwtProvider).validateToken(token);
+        verify(jwtProvider).getIdFromToken(token);
+        verify(jwtProvider).getRoleFromToken(token);
+    }
+
+    @Test
+    @DisplayName("Should not authenticate when token is invalid")
+    void doFilterInternal_InvalidToken() throws Exception {
+        String token = "invalid.token";
+
+        when(jwtProvider.validateToken(token)).thenReturn(false);
+
+        mockMvc.perform(get("/api/any-protected-resource")
+                .header("Authorization", "Bearer " + token))
+                .andExpect(status().isForbidden());
+
+        verify(jwtProvider).validateToken(token);
+        verify(jwtProvider, never()).getIdFromToken(any());
+    }
+
+    @Test
+    @DisplayName("Should skip filtering when Authorization header is missing")
+    void doFilterInternal_NoHeader() throws Exception {
+        mockMvc.perform(get("/api/any-protected-resource"))
+                .andExpect(status().isForbidden());
+
+        verifyNoInteractions(jwtProvider);
+    }
+
+    @Test
+    @DisplayName("Should catch and log exception when provider fails")
+    void doFilterInternal_ExceptionInProvider() throws Exception {
+        String token = "token.causing.exception";
+
+        when(jwtProvider.validateToken(token)).thenThrow(new RuntimeException("Unexpected error"));
+
+        mockMvc.perform(get("/api/any-protected-resource")
+                .header("Authorization", "Bearer " + token))
+                .andExpect(status().isForbidden());
+
+        verify(jwtProvider).validateToken(token);
+    }
+}
