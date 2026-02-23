@@ -26,13 +26,13 @@ public class JwtProviderImp implements JwtProvider {
     
     private SecretKey getSigningKey() {
         return Keys.hmacShaKeyFor(
-            properties.getSecret().getBytes(StandardCharsets.UTF_8));
+            properties.secret().getBytes(StandardCharsets.UTF_8));
     }
 
     @Override
     public String generateToken(User user) {
         Instant now = Instant.now();
-        Instant expireInstant = now.plusMillis(properties.getExpires());
+        Instant expireInstant = now.plusMillis(properties.expires());
 
         return Jwts.builder()
             .subject(user.getId().toString())
@@ -56,6 +56,14 @@ public class JwtProviderImp implements JwtProvider {
             log.warn("Invalid JWT token: {}", exc.getMessage());
             return false;
         }
+    }
+
+    @Override
+    public String getIdFromToken(String token) {
+       Claims claims = parseClaims(token);
+       String id = claims.getSubject();
+
+       return id;
     }
 
     @Override
@@ -90,7 +98,7 @@ public class JwtProviderImp implements JwtProvider {
     }
 
     public long getExpires() {
-        return properties.getExpires();
+        return properties.expires();
     }
 
 }

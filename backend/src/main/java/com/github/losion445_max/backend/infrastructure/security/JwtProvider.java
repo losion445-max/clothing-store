@@ -9,4 +9,5 @@ public interface JwtProvider {
     String getUsernameFromToken(String token);
     String getRoleFromToken(String token);
     long getExpires();
+    String getIdFromToken(String token);
 }
