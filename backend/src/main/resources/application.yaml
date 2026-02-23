@@ -15,6 +15,9 @@ spring:
     url: ${SPRING_DATASOURCE_URL}
     name: ${SPRING_DATASOURCE_USERNAME
     password: ${SPRING_DATASOURCE_PASSWORD}
+
+app:
+  allowed-origins: ${ALLOWED_ORIGINS:http://localhost:3000}
 jwt:
   secret: ${JWT_SECRET}
   expires: ${JWT_EXPIRES:3600000}
