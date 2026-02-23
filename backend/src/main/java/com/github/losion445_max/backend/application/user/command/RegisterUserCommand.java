@@ -2,7 +2,6 @@ package com.github.losion445_max.backend.application.user.command;
 
 import lombok.Builder;
 import lombok.Getter;
-import lombok.ToString;
 
 @Getter
 @Builder
