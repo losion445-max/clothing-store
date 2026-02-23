@@ -13,5 +13,8 @@ spring:
     show-sql: true
   datasource:
     url: ${SPRING_DATASOURCE_URL}
-    name: ${SPRING_DATASOURCE_USERNAME}
+    name: ${SPRING_DATASOURCE_USERNAME
     password: ${SPRING_DATASOURCE_PASSWORD}
+jwt:
+  secret: ${JWT_SECRET}
+  expires: ${JWT_EXPIRES:3600000}
