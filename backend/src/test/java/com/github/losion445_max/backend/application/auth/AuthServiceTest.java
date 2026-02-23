@@ -4,7 +4,8 @@ import com.github.losion445_max.backend.application.user.LoginUserUseCase;
 import com.github.losion445_max.backend.application.user.command.LoginUserCommand;
 import com.github.losion445_max.backend.domain.user.model.User;
 import com.github.losion445_max.backend.infrastructure.security.JwtProvider;
-import com.github.losion445_max.backend.web.user.dto.AuthResponse;
+import com.github.losion445_max.backend.web.auth.AuthResponse;
+
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Tag;
 import org.junit.jupiter.api.Test;
