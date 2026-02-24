@@ -7,6 +7,8 @@ import static org.junit.jupiter.api.Assertions.assertThrows;
 import org.junit.jupiter.api.Tag;
 import org.junit.jupiter.api.Test;
 
+import com.github.losion445_max.backend.domain.exception.UserDomainException;
+
 @Tag("unit")
 public class UserTest {
     
@@ -31,7 +33,7 @@ public class UserTest {
     @Test
     void testCreateUserEmptyName() {
         Exception exc = assertThrows(
-            IllegalArgumentException.class, 
+            UserDomainException.class, 
             () -> User.create("", "email@gmail.com", "hashPassword"));
         assertEquals("Name is required", exc.getMessage());
     }
@@ -39,7 +41,7 @@ public class UserTest {
     @Test
     void testCreateUserNullName() {
         Exception exc = assertThrows(
-            IllegalArgumentException.class, 
+            UserDomainException.class, 
             () -> User.create(null, "email@gmail.com", "hashPassword"));
         assertEquals("Name is required", exc.getMessage());
     }
@@ -47,7 +49,7 @@ public class UserTest {
     @Test
     void testCreateUserInvalidEmail() {
         Exception exc = assertThrows(
-            IllegalArgumentException.class, 
+            UserDomainException.class, 
             () -> User.create("Name", "bad-email", "hashPassword"));
         assertEquals("Email is invalid", exc.getMessage());
     }
@@ -55,7 +57,7 @@ public class UserTest {
     @Test
     void testCreateUserEmptyPassword() {
         Exception exc = assertThrows(
-            IllegalArgumentException.class, 
+            UserDomainException.class, 
             () -> User.create("Name", "email@gmail.com", ""));
         assertEquals("Password is required", exc.getMessage());
     }
@@ -63,7 +65,7 @@ public class UserTest {
     @Test
     void testCreateUserNullPassword() {
         Exception exc = assertThrows(
-            IllegalArgumentException.class, 
+            UserDomainException.class, 
             () -> User.create("Name", "email@gmail.com", null));
         assertEquals("Password is required", exc.getMessage());
     }

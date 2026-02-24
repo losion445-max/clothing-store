@@ -15,6 +15,7 @@ import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.test.context.ActiveProfiles;
 
 import com.github.losion445_max.backend.application.user.command.RegisterUserCommand;
+import com.github.losion445_max.backend.domain.exception.EmailAlreadyExistsException;
 import com.github.losion445_max.backend.domain.user.model.User;
 import com.github.losion445_max.backend.domain.user.repository.UserRepository;
 
@@ -72,8 +73,8 @@ public class RegisterUserUseCaseTest {
         
         when(userRepository.existsByEmail("email@gmail.com")).thenReturn(true);
 
-        IllegalArgumentException exc = assertThrows(
-            IllegalArgumentException.class,
+        EmailAlreadyExistsException exc = assertThrows(
+            EmailAlreadyExistsException.class,
             () -> useCase.execute(command));
 
         assertEquals("Email is already in use", exc.getMessage());

@@ -1,6 +1,7 @@
 package com.github.losion445_max.backend.application.user;
 
 import com.github.losion445_max.backend.application.user.command.LoginUserCommand;
+import com.github.losion445_max.backend.domain.exception.BadCredentialsException;
 import com.github.losion445_max.backend.domain.user.model.User;
 import com.github.losion445_max.backend.domain.user.repository.UserRepository;
 import org.junit.jupiter.api.DisplayName;
@@ -12,11 +13,11 @@ import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 import org.springframework.security.crypto.password.PasswordEncoder;
 
-import java.util.NoSuchElementException;
 import java.util.Optional;
 import java.util.UUID;
 
 import static org.junit.jupiter.api.Assertions.*;
+import static org.mockito.ArgumentMatchers.anyString;
 import static org.mockito.Mockito.*;
 
 @Tag("unit")
@@ -75,7 +76,7 @@ class LoginUserUseCaseTest {
 
         when(userRepository.findByEmail(anyString())).thenReturn(Optional.empty());
 
-        assertThrows(NoSuchElementException.class, () -> loginUserUseCase.execute(command));
+        assertThrows(BadCredentialsException.class, () -> loginUserUseCase.execute(command));
         verifyNoInteractions(passwordEncoder);
     }
 
@@ -96,6 +97,6 @@ class LoginUserUseCaseTest {
         when(userRepository.findByEmail(email)).thenReturn(Optional.of(domainUser));
         when(passwordEncoder.matches("wrong_pass", "correct_hash")).thenReturn(false);
 
-        assertThrows(IllegalArgumentException.class, () -> loginUserUseCase.execute(command));
+        assertThrows(BadCredentialsException.class, () -> loginUserUseCase.execute(command));
     }
 }

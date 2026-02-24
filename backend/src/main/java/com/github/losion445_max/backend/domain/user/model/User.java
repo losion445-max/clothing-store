@@ -3,48 +3,48 @@ package com.github.losion445_max.backend.domain.user.model;
 import java.time.Instant;
 import java.util.UUID;
 
+
+import com.github.losion445_max.backend.domain.exception.UserDomainException;
+
+import lombok.AccessLevel;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
-import lombok.Data;
-import lombok.NoArgsConstructor;
-
-
+import lombok.Getter;
 
 @Builder
-@NoArgsConstructor
-@AllArgsConstructor
-@Data
+@AllArgsConstructor(access = AccessLevel.PRIVATE)
+@Getter
 public class User {
-    private UUID id;
+    private final UUID id;
     
-    private String name;
+    private final String name;
+    private final String email;
+    private final String hashPassword;
 
-    private String email;
+    private final Role role;
 
-    private String hashPassword;
+    private final Instant createdAt;
+    private final Instant updatedAt;
 
-    @Builder.Default
-    private Role role = Role.USER;
-
-    private Instant createdAt;
-    private Instant updatedAt;
-
+    
     public static User create(String name, String email, String hashPassword) {
         if (name == null || name.isBlank()) {
-            throw new IllegalArgumentException("Name is required");
+            throw new UserDomainException("Name is required");
         }
 
-        if (email == null || email.isBlank() || !email.matches("^[A-Za-z0-9+_.-]+@(.+)$")) {
-            throw new IllegalArgumentException("Email is invalid");
+        if (email == null || !email.matches("^[A-Za-z0-9+_.-]+@(.+)$")) {
+            throw new UserDomainException("Email is invalid");
         }
         if (hashPassword == null || hashPassword.isBlank()) {
-            throw new IllegalArgumentException("Password is required");
+            throw new UserDomainException("Password is required");
         }
+
 
         return User.builder()
             .name(name)
             .email(email)
             .hashPassword(hashPassword)
+            .role(Role.USER)
             .build();
         }
 

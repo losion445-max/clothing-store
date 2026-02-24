@@ -1,6 +1,5 @@
 package com.github.losion445_max.backend.application.auth;
 
-import com.github.losion445_max.backend.application.auth.AuthResult;
 import com.github.losion445_max.backend.application.user.LoginUserUseCase;
 import com.github.losion445_max.backend.application.user.RegisterUserUseCase;
 import com.github.losion445_max.backend.application.user.command.LoginUserCommand;

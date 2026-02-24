@@ -1,12 +1,11 @@
 package com.github.losion445_max.backend.application.user;
 
-import java.util.NoSuchElementException;
-import java.util.Optional;
 
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
 import com.github.losion445_max.backend.application.user.command.LoginUserCommand;
+import com.github.losion445_max.backend.domain.exception.BadCredentialsException;
 import com.github.losion445_max.backend.domain.user.model.User;
 import com.github.losion445_max.backend.domain.user.repository.UserRepository;
 
@@ -26,18 +25,17 @@ public class LoginUserUseCase {
     public User execute(LoginUserCommand command) {
         log.info("Login use case started for: {}", command.getEmail());
 
-        Optional<User> userOpt = userRepository.findByEmail(command.getEmail());
+        User user = userRepository.findByEmail(command.getEmail())
+            .orElseThrow(() -> {
+                log.warn("User with email={} not found", command.getEmail());
 
-        if (userOpt.isEmpty()) {
-            log.warn("User with email={} not found", command.getEmail());
-            throw new NoSuchElementException("User not found");
-        }
+                return new BadCredentialsException();
+            });
 
         log.info("User with email={} was found, checking password", command.getEmail());
-        User user = userOpt.get();
         if (!passwordEncoder.matches(command.getPassword(), user.getHashPassword())) {
             log.warn("Password for user with email={} is incorrect", command.getEmail());
-            throw new IllegalArgumentException("Wrong password");
+            throw new BadCredentialsException();
         }
 
         log.info("User with email={} was successfully logged in", user.getEmail());

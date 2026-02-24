@@ -1,6 +1,7 @@
 package com.github.losion445_max.backend.web.auth;
 
 import org.springframework.http.HttpStatus;
+import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
@@ -25,11 +26,11 @@ import lombok.extern.slf4j.Slf4j;
 
 @Slf4j
 @RestController
-@RequestMapping("/api/auth")
+@RequestMapping(produces = MediaType.APPLICATION_JSON_VALUE, path = "/api/auth")
 @AllArgsConstructor
 public class AuthController {
 
-    private AuthMapper authMapper;
+    private final AuthMapper authMapper;
     
     private final AuthService authService;
 
