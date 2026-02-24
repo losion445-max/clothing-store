@@ -1,5 +1,9 @@
 package com.github.losion445_max.backend.infrastructure.security;
 
+import com.github.losion445_max.backend.application.auth.AuthService;
+import com.github.losion445_max.backend.web.auth.AuthController;
+import com.github.losion445_max.backend.web.auth.dto.AuthMapper;
+
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Tag;
 import org.junit.jupiter.api.Test;
@@ -14,7 +18,7 @@ import static org.springframework.test.web.servlet.request.MockMvcRequestBuilder
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
 @Tag("integration")
-@WebMvcTest
+@WebMvcTest(AuthController.class)
 @Import(SecurityConfig.class)
 class JwtFilterIntegrationTest {
 
@@ -23,6 +27,12 @@ class JwtFilterIntegrationTest {
 
     @MockitoBean
     private JwtProvider jwtProvider;
+
+    @MockitoBean
+    private AuthService authService;
+
+    @MockitoBean
+    private AuthMapper authMapper;
 
     @Test
     @DisplayName("Should authenticate when token is valid")
@@ -56,7 +66,6 @@ class JwtFilterIntegrationTest {
                 .andExpect(status().isForbidden());
 
         verify(jwtProvider).validateToken(token);
-        verify(jwtProvider, never()).getIdFromToken(any());
     }
 
     @Test

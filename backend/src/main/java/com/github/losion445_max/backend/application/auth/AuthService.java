@@ -1,38 +1,43 @@
 package com.github.losion445_max.backend.application.auth;
 
-import org.springframework.stereotype.Service;
-
+import com.github.losion445_max.backend.application.auth.AuthResult;
 import com.github.losion445_max.backend.application.user.LoginUserUseCase;
+import com.github.losion445_max.backend.application.user.RegisterUserUseCase;
 import com.github.losion445_max.backend.application.user.command.LoginUserCommand;
+import com.github.losion445_max.backend.application.user.command.RegisterUserCommand;
 import com.github.losion445_max.backend.domain.user.model.User;
 import com.github.losion445_max.backend.infrastructure.security.JwtProvider;
-import com.github.losion445_max.backend.web.auth.AuthResponse;
-
-import lombok.AllArgsConstructor;
+import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.stereotype.Service;
+import java.time.Instant;
 
 @Slf4j
 @Service
-@AllArgsConstructor
+@RequiredArgsConstructor
 public class AuthService {
 
-    private LoginUserUseCase useCase;
-    private JwtProvider jwtProvider;
+    private final RegisterUserUseCase registerUserUseCase;
+    private final LoginUserUseCase loginUseCase;
+    private final JwtProvider jwtProvider;
 
-
-    public AuthResponse login(LoginUserCommand command) {
+    public AuthResult login(LoginUserCommand command) {
         log.info("Auth for user with email={}", command.getEmail());
-        User user = useCase.execute(command);
-
+        
+        User user = loginUseCase.execute(command);
         String jwtToken = jwtProvider.generateToken(user);
+        Instant expiresAt = Instant.ofEpochMilli(System.currentTimeMillis() + jwtProvider.getExpires());
 
         log.info("Auth success");
-        return AuthResponse.builder()
+        
+        return AuthResult.builder()
             .accessToken(jwtToken)
-            .tokenType("Bearer")
-            .expires(jwtProvider.getExpires())
-            .username(user.getName())
-            .role(user.getRole())
+            .expires(expiresAt)
+            .user(user)
             .build();
+    }
+
+    public User register(RegisterUserCommand command) {
+        return registerUserUseCase.execute(command);
     }
 }
