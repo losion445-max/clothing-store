@@ -20,6 +20,7 @@ services:
       - 8080:8080
 
   backend:
+    user: 1000:1000
     restart: always
     ports:
       - 8081:8080
@@ -33,9 +34,12 @@ services:
       - ./backend:/backend
       - maven_cache:/root/.m2
     environment:
+      ALLOWED_ORIGINS: ${ALLOWED_ORIGINS}
       SPRING_DATASOURCE_URL: ${SPRING_DATASOURCE_URL}
       SPRING_DATASOURCE_USERNAME: ${SPRING_DATASOURCE_USERNAME}
       SPRING_DATASOURCE_PASSWORD: ${SPRING_DATASOURCE_PASSWORD}
+    env_file:
+      - ./backend/.env
 
   frontend:
     ports:
