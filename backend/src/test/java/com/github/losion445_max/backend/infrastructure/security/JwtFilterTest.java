@@ -20,7 +20,7 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 
 
 @Tag("integration")
-@WebMvcTest({AuthController.class, com.github.losion445_max.backend.infrastructure.security.TestController.class})
+@WebMvcTest({AuthController.class, TestController.class})
 @Import(SecurityConfig.class)
 class JwtFilterIntegrationTest {
 
@@ -43,7 +43,6 @@ class JwtFilterIntegrationTest {
         String id = "user-uuid";
         String role = "USER";
 
-        when(jwtProvider.validateToken(token)).thenReturn(true);
         when(jwtProvider.getIdFromToken(token)).thenReturn(id);
         when(jwtProvider.getRoleFromToken(token)).thenReturn(role);
 
@@ -60,8 +59,6 @@ class JwtFilterIntegrationTest {
     @DisplayName("Should not authenticate when token is invalid")
     void doFilterInternal_InvalidToken() throws Exception {
         String token = "invalid.token";
-
-        when(jwtProvider.validateToken(token)).thenReturn(false);
 
         mockMvc.perform(get("/api/test/protected")
                 .header("Authorization", "Bearer " + token))
@@ -83,8 +80,6 @@ class JwtFilterIntegrationTest {
     @DisplayName("Should catch and log exception when provider fails")
     void doFilterInternal_ExceptionInProvider() throws Exception {
         String token = "token.causing.exception";
-
-        when(jwtProvider.validateToken(token)).thenThrow(new RuntimeException("Unexpected error"));
 
         mockMvc.perform(get("/api/test/protected")
                 .header("Authorization", "Bearer " + token))

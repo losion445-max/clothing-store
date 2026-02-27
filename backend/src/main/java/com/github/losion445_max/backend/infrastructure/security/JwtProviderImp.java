@@ -11,7 +11,6 @@ import org.springframework.stereotype.Service;
 import com.github.losion445_max.backend.domain.user.model.User;
 
 import io.jsonwebtoken.Claims;
-import io.jsonwebtoken.JwtException;
 import io.jsonwebtoken.Jwts;
 import io.jsonwebtoken.security.Keys;
 import lombok.AllArgsConstructor;
@@ -45,17 +44,11 @@ public class JwtProviderImp implements JwtProvider {
     }
 
     @Override
-    public boolean validateToken(String token) {
-        try {
-            Jwts.parser()
-                .verifyWith(getSigningKey())
-                .build()
-                .parseSignedClaims(token);
-            return true;
-        } catch (JwtException | IllegalArgumentException exc) {
-            log.warn("Invalid JWT token: {}", exc.getMessage());
-            return false;
-        }
+    public void validateToken(String token) {
+        Jwts.parser()
+            .verifyWith(getSigningKey())
+            .build()
+            .parseSignedClaims(token);
     }
 
     @Override

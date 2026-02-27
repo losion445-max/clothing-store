@@ -29,13 +29,13 @@ public class LoginUserUseCase {
             .orElseThrow(() -> {
                 log.warn("User with email={} not found", command.getEmail());
 
-                return new BadCredentialsException();
+                return new BadCredentialsException("Invalid email or password");
             });
 
         log.info("User with email={} was found, checking password", command.getEmail());
         if (!passwordEncoder.matches(command.getPassword(), user.getHashPassword())) {
             log.warn("Password for user with email={} is incorrect", command.getEmail());
-            throw new BadCredentialsException();
+            throw new BadCredentialsException("Invalid email or password");
         }
 
         log.info("User with email={} was successfully logged in", user.getEmail());
