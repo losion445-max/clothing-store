@@ -53,9 +53,15 @@ public class JwtFilter extends OncePerRequestFilter{
                     log.info("Successfully authenticated user with ID: {} for URI: {}", id, request.getRequestURI());
                     
                 }
+                 else {
+                    response.setStatus(HttpServletResponse.SC_FORBIDDEN);
+                    return;
+                 }
             
             } catch (Exception exc) {
                 log.error("Authentication failed: {}", exc.getMessage());
+                response.setStatus(HttpServletResponse.SC_FORBIDDEN);
+                return;
             }
 
             filterChain.doFilter(request, response);

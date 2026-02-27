@@ -17,8 +17,10 @@ import static org.mockito.Mockito.*;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
+
+
 @Tag("integration")
-@WebMvcTest(AuthController.class)
+@WebMvcTest({AuthController.class, com.github.losion445_max.backend.infrastructure.security.TestController.class})
 @Import(SecurityConfig.class)
 class JwtFilterIntegrationTest {
 
@@ -45,9 +47,9 @@ class JwtFilterIntegrationTest {
         when(jwtProvider.getIdFromToken(token)).thenReturn(id);
         when(jwtProvider.getRoleFromToken(token)).thenReturn(role);
 
-        mockMvc.perform(get("/api/any-protected-resource")
+        mockMvc.perform(get("/api/test/protected")
                 .header("Authorization", "Bearer " + token))
-                .andExpect(status().isNotFound());
+                .andExpect(status().isOk());
 
         verify(jwtProvider).validateToken(token);
         verify(jwtProvider).getIdFromToken(token);
@@ -61,7 +63,7 @@ class JwtFilterIntegrationTest {
 
         when(jwtProvider.validateToken(token)).thenReturn(false);
 
-        mockMvc.perform(get("/api/any-protected-resource")
+        mockMvc.perform(get("/api/test/protected")
                 .header("Authorization", "Bearer " + token))
                 .andExpect(status().isForbidden());
 
@@ -71,7 +73,7 @@ class JwtFilterIntegrationTest {
     @Test
     @DisplayName("Should skip filtering when Authorization header is missing")
     void doFilterInternal_NoHeader() throws Exception {
-        mockMvc.perform(get("/api/any-protected-resource"))
+        mockMvc.perform(get("/api/test/protected"))
                 .andExpect(status().isForbidden());
 
         verifyNoInteractions(jwtProvider);
@@ -84,7 +86,7 @@ class JwtFilterIntegrationTest {
 
         when(jwtProvider.validateToken(token)).thenThrow(new RuntimeException("Unexpected error"));
 
-        mockMvc.perform(get("/api/any-protected-resource")
+        mockMvc.perform(get("/api/test/protected")
                 .header("Authorization", "Bearer " + token))
                 .andExpect(status().isForbidden());
 
