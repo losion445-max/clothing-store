@@ -1,7 +1,7 @@
 package com.github.losion445_max.backend.infrastructure.security;
 
 import com.github.losion445_max.backend.application.auth.AuthService;
-import com.github.losion445_max.backend.web.auth.AuthController;
+import com.github.losion445_max.backend.web.auth.api.AuthController;
 import com.github.losion445_max.backend.web.auth.dto.AuthMapper;
 
 import org.junit.jupiter.api.DisplayName;
