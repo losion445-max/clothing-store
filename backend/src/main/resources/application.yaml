@@ -26,3 +26,12 @@ app:
 jwt:
   secret: ${JWT_SECRET}
   expires: ${JWT_EXPIRES:3600000}
+
+management:
+  endpoints:
+    web:
+      exposure:
+        include: health, info, prometheus
+  endpoint:
+    health:
+      show-details: always
