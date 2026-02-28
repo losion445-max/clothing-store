@@ -10,12 +10,16 @@ spring:
       add-mappings: false
   jpa:
     hibernate:
-      ddl-auto: update
+      ddl-auto: validate
     show-sql: true
   datasource:
     url: ${SPRING_DATASOURCE_URL}
-    name: ${SPRING_DATASOURCE_USERNAME
+    username: ${SPRING_DATASOURCE_USERNAME}
     password: ${SPRING_DATASOURCE_PASSWORD}
+  liquibase:
+    enabled: true
+    change-log: classpath:db/changelog/db.changelog-master.yaml
+    show-summary: summary
 
 app:
   allowed-origins: ${ALLOWED_ORIGINS:http://localhost:3000}
