@@ -1,20 +1,20 @@
 package com.github.losion445_max.backend.application.user;
 
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import com.github.losion445_max.backend.application.user.command.CreateUserProfileCommand;
+import com.github.losion445_max.backend.application.user.dto.CreateUserProfileResult;
 import com.github.losion445_max.backend.domain.user.model.UserProfile;
 import com.github.losion445_max.backend.domain.user.repository.UserProfileRepository;
-import com.github.losion445_max.backend.web.user.dto.CreateUserProfileResult;
 
-import jakarta.transaction.Transactional;
 import lombok.AllArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 
 @Slf4j
 @Service
 @AllArgsConstructor 
-public class CreateUserProfile {
+public class CreateUserProfileUseCase {
 
     private final UserProfileRepository repository;
 

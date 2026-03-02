@@ -7,7 +7,7 @@ import com.github.losion445_max.backend.domain.user.model.UserProfile;
 
 public interface UserProfileRepository {
 
-    Optional<UserProfile> findByID(UUID id);
+    Optional<UserProfile> findById(UUID id);
 
     void save(UserProfile profile);
 
