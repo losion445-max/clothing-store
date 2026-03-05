@@ -7,6 +7,7 @@ import static org.junit.jupiter.api.Assertions.assertThrows;
 import org.junit.jupiter.api.Tag;
 import org.junit.jupiter.api.Test;
 
+import com.github.losion445_max.backend.domain.account.User;
 import com.github.losion445_max.backend.domain.exception.UserDomainException;
 
 @Tag("unit")

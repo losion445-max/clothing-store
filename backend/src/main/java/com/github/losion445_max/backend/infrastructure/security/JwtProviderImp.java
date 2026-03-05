@@ -3,12 +3,11 @@ package com.github.losion445_max.backend.infrastructure.security;
 import java.nio.charset.StandardCharsets;
 import java.time.Instant;
 import java.util.Date;
+import java.util.UUID;
 
 import javax.crypto.SecretKey;
 
 import org.springframework.stereotype.Service;
-
-import com.github.losion445_max.backend.domain.user.model.User;
 
 import io.jsonwebtoken.Claims;
 import io.jsonwebtoken.Jwts;
@@ -29,14 +28,14 @@ public class JwtProviderImp implements JwtProvider {
     }
 
     @Override
-    public String generateToken(User user) {
+    public String generateToken(UUID userId, String role, String username) {
         Instant now = Instant.now();
         Instant expireInstant = now.plusMillis(properties.expires());
 
         return Jwts.builder()
-            .subject(user.getId().toString())
-            .claim("role", user.getRole())
-            .claim("username", user.getName())
+            .subject(userId.toString())
+            .claim("role", role)
+            .claim("username", username)
             .issuedAt(Date.from(now))
             .expiration(Date.from(expireInstant))
             .signWith(getSigningKey())

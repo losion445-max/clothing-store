@@ -1,10 +1,9 @@
 package com.github.losion445_max.backend.application.auth;
 
-import com.github.losion445_max.backend.application.user.LoginUserUseCase;
-import com.github.losion445_max.backend.application.user.RegisterUserUseCase;
-import com.github.losion445_max.backend.application.user.command.LoginUserCommand;
-import com.github.losion445_max.backend.application.user.command.RegisterUserCommand;
-import com.github.losion445_max.backend.domain.user.model.User;
+import com.github.losion445_max.backend.application.account.RegisterUserUseCase;
+import com.github.losion445_max.backend.application.account.command.RegisterUserCommand;
+import com.github.losion445_max.backend.application.account.result.RegisterUserResult;
+import com.github.losion445_max.backend.application.auth.command.LoginUserCommand;
 import com.github.losion445_max.backend.infrastructure.security.JwtProvider;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -23,8 +22,12 @@ public class AuthService {
     public AuthResult login(LoginUserCommand command) {
         log.info("Auth for user with email={}", command.getEmail());
         
-        User user = loginUseCase.execute(command);
-        String jwtToken = jwtProvider.generateToken(user);
+        RegisterUserResult user = loginUseCase.execute(command);
+        String jwtToken = jwtProvider.generateToken(
+            user.id(),
+            user.email(),
+            user.role().name()
+        );
         Instant expiresAt = Instant.ofEpochMilli(System.currentTimeMillis() + jwtProvider.getExpires());
 
         log.info("Auth success");
@@ -36,7 +39,9 @@ public class AuthService {
             .build();
     }
 
-    public User register(RegisterUserCommand command) {
+    public RegisterUserResult register(RegisterUserCommand command) {
+        log.info("Attempting registration for email: {}", command.getEmail());
+        
         return registerUserUseCase.execute(command);
     }
 }

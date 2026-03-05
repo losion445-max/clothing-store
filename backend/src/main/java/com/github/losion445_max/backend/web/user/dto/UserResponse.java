@@ -2,7 +2,7 @@ package com.github.losion445_max.backend.web.user.dto;
 
 import java.util.UUID;
 
-import com.github.losion445_max.backend.domain.user.model.User.Role;
+import com.github.losion445_max.backend.domain.account.User.Role;
 
 import lombok.AllArgsConstructor;
 import lombok.Builder;

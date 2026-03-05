@@ -1,6 +1,6 @@
 package com.github.losion445_max.backend.web.auth.dto;
 
-import com.github.losion445_max.backend.domain.user.model.User.Role;
+import com.github.losion445_max.backend.domain.account.User.Role;
 
 import lombok.Builder;
 

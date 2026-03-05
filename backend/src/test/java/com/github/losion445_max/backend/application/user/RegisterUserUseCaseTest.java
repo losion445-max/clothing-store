@@ -3,25 +3,26 @@ package com.github.losion445_max.backend.application.user;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.mockito.ArgumentMatchers.any;
+import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.never;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
 import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Tag;
 import org.junit.jupiter.api.Test;
-import org.mockito.Mockito;
 import org.springframework.security.crypto.password.PasswordEncoder;
-import org.springframework.test.context.ActiveProfiles;
 
-import com.github.losion445_max.backend.application.user.command.RegisterUserCommand;
+import com.github.losion445_max.backend.application.account.RegisterUserUseCase;
+import com.github.losion445_max.backend.application.account.command.RegisterUserCommand;
+import com.github.losion445_max.backend.application.account.result.RegisterUserResult;
+import com.github.losion445_max.backend.domain.account.User;
+import com.github.losion445_max.backend.domain.account.UserRepository;
 import com.github.losion445_max.backend.domain.exception.EmailAlreadyExistsException;
-import com.github.losion445_max.backend.domain.user.model.User;
-import com.github.losion445_max.backend.domain.user.repository.UserRepository;
 
 @Tag("unit")
-@ActiveProfiles("test")
-public class RegisterUserUseCaseTest {
+class RegisterUserUseCaseTest {
     
     private UserRepository userRepository;
     private PasswordEncoder passwordEncoder;
@@ -29,12 +30,13 @@ public class RegisterUserUseCaseTest {
 
     @BeforeEach
     void setUp() {
-        userRepository = Mockito.mock(UserRepository.class);
-        passwordEncoder = Mockito.mock(PasswordEncoder.class);
+        userRepository = mock(UserRepository.class);
+        passwordEncoder = mock(PasswordEncoder.class);
         useCase = new RegisterUserUseCase(userRepository, passwordEncoder);
     }
 
     @Test
+    @DisplayName("Should return RegisterUserResult when registration is successful")
     void testRegisterUserHappyPath() {
         RegisterUserCommand command = RegisterUserCommand.builder()
             .name("Name")
@@ -42,21 +44,17 @@ public class RegisterUserUseCaseTest {
             .password("password")
             .build();
         
-        when(userRepository.existsByEmail("email@gmail.com"))
-            .thenReturn(false);
-
-        when(passwordEncoder.encode("password"))
-            .thenReturn("hashPassword");
+        when(userRepository.existsByEmail("email@gmail.com")).thenReturn(false);
+        when(passwordEncoder.encode("password")).thenReturn("hashPassword");
         
         User savedUser = User.create("Name", "email@gmail.com", "hashPassword");
-        when(userRepository.save(any(User.class)))
-            .thenReturn(savedUser);
+        when(userRepository.save(any(User.class))).thenReturn(savedUser);
         
-        User result = useCase.execute(command);
+        RegisterUserResult result = useCase.execute(command);
 
-        assertEquals("Name", result.getName());
-        assertEquals("email@gmail.com", result.getEmail());
-        assertEquals("hashPassword", result.getHashPassword());
+        assertEquals("Name", result.name());
+        assertEquals("email@gmail.com", result.email());
+        assertEquals(User.Role.USER, result.role());
 
         verify(userRepository).existsByEmail("email@gmail.com");
         verify(passwordEncoder).encode("password");
@@ -64,6 +62,7 @@ public class RegisterUserUseCaseTest {
     }
 
     @Test
+    @DisplayName("Should throw EmailAlreadyExistsException when email is taken")
     void testRegisterUserEmailAlreadyExists() {
         RegisterUserCommand command = RegisterUserCommand.builder()
             .name("Name")

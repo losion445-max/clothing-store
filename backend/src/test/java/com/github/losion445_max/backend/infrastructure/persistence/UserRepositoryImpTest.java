@@ -13,8 +13,8 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.test.context.ActiveProfiles;
 
-import com.github.losion445_max.backend.domain.user.model.User;
-import com.github.losion445_max.backend.domain.user.repository.UserRepository;
+import com.github.losion445_max.backend.domain.account.User;
+import com.github.losion445_max.backend.domain.account.UserRepository;
 
 @Tag("integration")
 @SpringBootTest
