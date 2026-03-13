@@ -1,11 +1,11 @@
 package com.github.losion445_max.backend.application.profile;
 
-import java.util.List;
 
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import com.github.losion445_max.backend.application.profile.command.AddAddressCommand;
+import com.github.losion445_max.backend.application.profile.mapper.ProfileMapper;
 import com.github.losion445_max.backend.application.profile.result.AddAddressResult;
 import com.github.losion445_max.backend.domain.exception.UserDomainException;
 import com.github.losion445_max.backend.domain.profile.Address;
@@ -20,6 +20,7 @@ import lombok.extern.slf4j.Slf4j;
 @RequiredArgsConstructor
 public class AddAddressUserProfileCase {
     private final UserProfileRepository repository;
+    private final ProfileMapper profileMapper;
 
     @Transactional
     public AddAddressResult execute(AddAddressCommand command) {
@@ -28,36 +29,13 @@ public class AddAddressUserProfileCase {
         UserProfile profile = repository.findById(command.id())
             .orElseThrow(() -> new UserDomainException("User Profile not found"));
 
-        Address address = new Address(
-            command.label(),
-            command.countryCode(),
-            command.city(),
-            command.postalCode(),
-            command.streetLine(),
-            command.isPrimary()
-        );
+        Address address = profileMapper.toAddress(command);
         profile.addAddress(address);
 
-        repository.save(profile);
+        repository.update(profile);
         log.info("Address successfully added {}", address.label());
 
-        
-        List<AddAddressResult.AddressData> addressDataList = profile.getAddresses().stream()
-            .map(addr -> new AddAddressResult.AddressData(
-                addr.label(),
-                addr.countryCode(),
-                addr.city(),
-                addr.postalCode(),
-                addr.streetLine(),
-                addr.isPrimary()
-        )).toList();
-
-        AddAddressResult result = new AddAddressResult(
-            profile.getId(),
-            addressDataList,
-            profile.getStatus()
-        );
-        return result;
+        return profileMapper.toAddAddressResult(profile);
 
 
     }

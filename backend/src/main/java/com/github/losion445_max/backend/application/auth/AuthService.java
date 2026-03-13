@@ -4,9 +4,13 @@ import com.github.losion445_max.backend.application.account.RegisterUserUseCase;
 import com.github.losion445_max.backend.application.account.command.RegisterUserCommand;
 import com.github.losion445_max.backend.application.account.result.RegisterUserResult;
 import com.github.losion445_max.backend.application.auth.command.LoginUserCommand;
+import com.github.losion445_max.backend.application.auth.result.AuthResult;
+import com.github.losion445_max.backend.domain.account.UserRegisteredEvent;
 import com.github.losion445_max.backend.infrastructure.security.JwtProvider;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+
+import org.springframework.context.ApplicationEventPublisher;
 import org.springframework.stereotype.Service;
 import java.time.Instant;
 
@@ -18,6 +22,7 @@ public class AuthService {
     private final RegisterUserUseCase registerUserUseCase;
     private final LoginUserUseCase loginUseCase;
     private final JwtProvider jwtProvider;
+    private final ApplicationEventPublisher eventPublisher;
 
     public AuthResult login(LoginUserCommand command) {
         log.info("Auth for user with email={}", command.getEmail());
@@ -42,6 +47,9 @@ public class AuthService {
     public RegisterUserResult register(RegisterUserCommand command) {
         log.info("Attempting registration for email: {}", command.getEmail());
         
-        return registerUserUseCase.execute(command);
+        RegisterUserResult result = registerUserUseCase.execute(command);
+        eventPublisher.publishEvent(new UserRegisteredEvent(result.id()));
+
+        return result;
     }
 }

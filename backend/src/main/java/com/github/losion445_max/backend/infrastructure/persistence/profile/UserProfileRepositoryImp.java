@@ -43,6 +43,17 @@ public class UserProfileRepositoryImp implements UserProfileRepository {
 
         log.info("User profile saved: {}", profile.getId());
     }
+
+    @Override
+    public void update(UserProfile profile) {
+        log.debug("Saving user profile: {}", profile.getId());
+
+        mapper.updateEntityFromDomain(
+            profile, 
+            jpaRepository.findById(profile.getId())
+                .orElseThrow(() -> new RuntimeException("Profile not found")) 
+        );
+    }
     
 
     @Override

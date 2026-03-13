@@ -1,4 +1,4 @@
-package com.github.losion445_max.backend.application.auth;
+package com.github.losion445_max.backend.application.auth.result;
 
 import java.time.Instant;
 

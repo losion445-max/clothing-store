@@ -10,5 +10,7 @@ public interface UserProfileRepository {
     void save(UserProfile profile);
 
     boolean existsById(UUID id);
+
+    void update(UserProfile profile);
     
 }

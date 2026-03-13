@@ -5,8 +5,8 @@ import org.mapstruct.Mapper;
 import org.mapstruct.Mapping;
 import com.github.losion445_max.backend.application.account.command.RegisterUserCommand;
 import com.github.losion445_max.backend.application.account.result.RegisterUserResult;
-import com.github.losion445_max.backend.application.auth.AuthResult;
 import com.github.losion445_max.backend.application.auth.command.LoginUserCommand;
+import com.github.losion445_max.backend.application.auth.result.AuthResult;
 import com.github.losion445_max.backend.web.user.dto.RegisterUserRequest;
 import com.github.losion445_max.backend.web.user.dto.UserResponse;
 

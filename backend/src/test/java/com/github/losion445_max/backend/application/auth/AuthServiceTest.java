@@ -4,7 +4,9 @@ import com.github.losion445_max.backend.application.account.RegisterUserUseCase;
 import com.github.losion445_max.backend.application.account.command.RegisterUserCommand;
 import com.github.losion445_max.backend.application.account.result.RegisterUserResult;
 import com.github.losion445_max.backend.application.auth.command.LoginUserCommand;
+import com.github.losion445_max.backend.application.auth.result.AuthResult;
 import com.github.losion445_max.backend.domain.account.User.Role;
+import com.github.losion445_max.backend.domain.account.UserRegisteredEvent;
 import com.github.losion445_max.backend.infrastructure.security.JwtProvider;
 
 import org.junit.jupiter.api.DisplayName;
@@ -14,12 +16,14 @@ import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
+import org.springframework.context.ApplicationEventPublisher;
 
 import java.time.Instant;
 import java.util.NoSuchElementException;
 import java.util.UUID;
 
 import static org.junit.jupiter.api.Assertions.*;
+import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.*;
 
 @Tag("unit")
@@ -37,6 +41,9 @@ class AuthServiceTest {
 
     @InjectMocks
     private AuthService authService;
+
+    @Mock
+    private ApplicationEventPublisher eventPublisher;
 
     @Test
     @DisplayName("Should return AuthResult when login is successful")
@@ -77,10 +84,11 @@ class AuthServiceTest {
     }
 
     @Test
-    @DisplayName("Should return RegisterUserResult when registration is successful")
+    @DisplayName("Should return RegisterUserResult and publish event when registration is successful")
     void register_Success() {
         RegisterUserCommand command = new RegisterUserCommand("Max", "test@mail.com", "password");
-        RegisterUserResult expectedResult = new RegisterUserResult(UUID.randomUUID(), "test@mail.com", "Max", Role.USER);
+        UUID userId = UUID.randomUUID();
+        RegisterUserResult expectedResult = new RegisterUserResult(userId, "test@mail.com", "Max", Role.USER);
         
         when(registerUserUseCase.execute(command)).thenReturn(expectedResult);
 
@@ -88,6 +96,8 @@ class AuthServiceTest {
 
         assertEquals(expectedResult, actualResult);
         verify(registerUserUseCase).execute(command);
+        
+        verify(eventPublisher).publishEvent(any(UserRegisteredEvent.class));
     }
 
     @Test

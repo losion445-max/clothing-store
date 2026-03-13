@@ -12,4 +12,15 @@ public record AddAddressCommand(
     boolean isPrimary
 ) {
 
+    public static AddAddressCommand withId(UUID id, AddAddressCommand command) {
+        return new AddAddressCommand(
+            id,
+            command.label,
+            command.countryCode,
+            command.city,
+            command.postalCode,
+            command.streetLine,
+            command.isPrimary
+        );
+    }
 }

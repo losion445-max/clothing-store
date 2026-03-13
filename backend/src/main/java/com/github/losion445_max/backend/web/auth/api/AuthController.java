@@ -6,11 +6,9 @@ import org.springframework.web.bind.annotation.RestController;
 
 import com.github.losion445_max.backend.application.account.command.RegisterUserCommand;
 import com.github.losion445_max.backend.application.account.result.RegisterUserResult;
-
-import com.github.losion445_max.backend.application.auth.AuthResult;
 import com.github.losion445_max.backend.application.auth.AuthService;
 import com.github.losion445_max.backend.application.auth.command.LoginUserCommand;
-
+import com.github.losion445_max.backend.application.auth.result.AuthResult;
 import com.github.losion445_max.backend.web.auth.dto.AuthMapper;
 import com.github.losion445_max.backend.web.auth.dto.AuthRequest;
 import com.github.losion445_max.backend.web.auth.dto.AuthResponse;

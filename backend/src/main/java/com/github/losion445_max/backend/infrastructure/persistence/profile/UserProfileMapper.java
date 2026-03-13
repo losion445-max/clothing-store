@@ -3,6 +3,7 @@ package com.github.losion445_max.backend.infrastructure.persistence.profile;
 import org.mapstruct.CollectionMappingStrategy;
 import org.mapstruct.Mapper;
 import org.mapstruct.Mapping;
+import org.mapstruct.MappingTarget;
 import org.mapstruct.Named;
 
 import com.github.losion445_max.backend.domain.profile.Address;
@@ -36,4 +37,8 @@ public interface UserProfileMapper {
     default Phone mapToPhone(String phoneNumber) {
         return phoneNumber != null ? new Phone(phoneNumber) : null;
     }
+
+    @Mapping(target = "id", ignore = true)
+    @Mapping(target = "phoneNumber", source = "phoneNumber.value")
+    void updateEntityFromDomain(UserProfile domain, @MappingTarget UserProfileJpaEntity entity);
 }

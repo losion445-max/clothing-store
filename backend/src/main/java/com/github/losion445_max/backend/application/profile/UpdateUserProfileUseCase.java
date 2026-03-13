@@ -25,7 +25,8 @@ public class UpdateUserProfileUseCase {
 
         UserProfile profile = repository.findById(command.id())
             .orElseThrow(
-                () -> new UserDomainException("Profile not found"));
+                () -> new UserDomainException("Profile not found")
+        );
 
         if (command.fullName() != null) 
                 profile.changeFullName(command.fullName());
@@ -37,15 +38,10 @@ public class UpdateUserProfileUseCase {
             profile.changeBirthDate(command.birthDate());
         
 
-        repository.save(profile);
+        repository.update(profile);
         log.info("User profile with id {} was successfully updated", profile.getId());
-
-        UpdateUserProfileResult result = new UpdateUserProfileResult(
-            profile.getId(),
-            profile.getStatus()
-        );
-
-        return result;
+  
+        return UpdateUserProfileResult.from(profile.getId(), profile.getStatus());
 
 
     }
